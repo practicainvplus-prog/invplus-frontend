@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de usuario - InvPlus</title>
+    <link rel="stylesheet" href="css/decoracion.css">
+</head>
+<body>
+
+<section class="form-register">
+    <form id="formulario-registro" onsubmit="enviarDatos(event)" autocomplete="off">
+
+        <h4>Formulario de registro</h4>
+
+        <h5>Fecha de nacimiento</h5>
+        <input class="controls" type="date" name="fecha_nacimiento" required>
+
+        <h5>Tipo de documento</h5>
+        <select name="tipo_documento" required>
+            <option value="">Seleccione...</option>
+            <option value="cc">Cédula de ciudadanía</option>
+            <option value="ce">Cédula de extranjería</option>
+            <option value="ti">Tarjeta de identidad</option>
+            <option value="nit">Nit</option>
+            <option value="pasaporte">Pasaporte</option>
+        </select>
+
+        <input class="controls" type="number" name="identificacion" placeholder="Número de identificación" required>
+        <input class="controls" type="text" name="nombres" placeholder="Nombres" required>
+        <input class="controls" type="text" name="apellidos" placeholder="Apellidos" required>
+        <input class="controls" type="email" name="correo" placeholder="Correo electrónico" required>
+        <input class="controls" type="password" name="password" placeholder="Contraseña" required>
+        
+        <br><br>
+        <input class="button" type="submit" value="Registrar">
+
+        <p style="text-align: center; margin-top: 10px;">
+            <a href="index.html" style="color: #1f53c5; text-decoration: none;">¿Ya tienes cuenta? Inicia sesión</a>
+        </p>
+    </form>
+</section>
+
+<script>
+    function enviarDatos(event) {
+        event.preventDefault(); 
+        
+        const form = event.target;
+        const datos = {
+            fecha_nacimiento: form.fecha_nacimiento.value,
+            tipo_documento: form.tipo_documento.value,
+            identificacion: form.identificacion.value,
+            nombres: form.nombres.value,
+            apellidos: form.apellidos.value,
+            correo: form.correo.value,
+            password: form.password.value
+        };
+
+        fetch('https://invplus-backend.onrender.com/crear-usuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(res => res.text())
+        .then(respuesta => {
+            // Limpiamos la respuesta por si el servidor devuelve HTML en vez de texto
+            const textoLimpio = respuesta.replace(/<[^>]*>/g, '');
+            
+            // Verificamos si la respuesta contiene un mensaje de éxito
+            if(textoLimpio.toLowerCase().includes("exito") || textoLimpio.toLowerCase().includes("ok")) {
+                alert("¡Registro exitoso! Ya puedes iniciar sesión.");
+                window.location.href = "index.html";
+            } else {
+                // Aquí veremos exactamente qué error está enviando el servidor
+                alert("Respuesta del servidor: " + textoLimpio);
+            }
+        })
+        .catch(err => {
+            alert("Error de conexión con el servidor: " + err);
+        });
+    }
+</script>
+
+</body>
+</html>
