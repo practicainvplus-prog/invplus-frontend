@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso del producto</title>
+    <link rel="stylesheet" href="../css/decoracion.css">
+</head>
+<body>
+    <section class="form-register product">
+        <h4>Ingreso del producto</h4>
+        
+        <form action="https://invplus-backend.onrender.com/ingreso-producto" method="POST">
+            <input type="hidden" name="id_usuario" id="id_usuario_input">
+
+            <table class="form-product">
+                <tr>
+                    <td>Seleccione Producto:</td>
+                    <td>
+                        <select class="controls" name="nombre_producto" id="select_productos" required>
+                            <option value="">Cargando tus productos...</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cantidad:</td>
+                    <td>
+                        <input class="controls" type="number" name="cantidad" placeholder="Ingrese la cantidad de ingreso" required>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="contenedor-botones">
+                <input class="button" type="submit" value="Registrar">
+                
+                <div class="acciones-inferiores">
+                    <a href="pagina-principal.html">Volver al Menú</a>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        const idUsuarioLogueado = localStorage.getItem('usuarioID');
+        if (idUsuarioLogueado) {
+            document.getElementById('id_usuario_input').value = idUsuarioLogueado;
+            
+            // Función interna para rellenar la lista desplegable desde Node
+            fetch(`http://localhost:3000/obtener-mis-productos?id_usuario=${idUsuarioLogueado}`)
+                .then(res => res.json())
+                .then(productos => {
+                    const select = document.getElementById('select_productos');
+                    select.innerHTML = ""; // Limpiar el "Cargando..."
+
+                    if(productos.length === 0){
+                        const opt = document.createElement('option');
+                        opt.value = "";
+                        opt.text = "⚠️ No tienes productos. ¡Regístralos primero!";
+                        select.appendChild(opt);
+                        return;
+                    }
+
+                    // Agregar opción inicial por defecto
+                    const optDefault = document.createElement('option');
+                    optDefault.value = "";
+                    optDefault.text = "-- Seleccione un producto --";
+                    select.appendChild(optDefault);
+
+                    // Poblar dinámicamente
+                    productos.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.nombre_producto;
+                        opt.text = p.nombre_producto;
+                        select.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error cargando productos:", err);
+                });
+
+        } else {
+            alert("No hay una sesión activa. Inicia sesión nuevamente.");
+            window.location.href = "iniciar_sesion.html";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Nuevo Producto</title>
+    <link rel="stylesheet" href="../css/decoracion.css">
+</head>
+<body>
+    <section class="form-register product">
+        <h4>Registrar Producto</h4>
+        
+        <form action="https://invplus-backend.onrender.com/registrar-nuevo-producto" method="POST">
+            <input type="hidden" name="id_usuario" id="id_usuario_input">
+
+            <table class="form-product">
+                <tr>
+                    <td>Nombre Producto:</td>
+                    <td>
+                        <input class="controls" type="text" name="nombre_producto" placeholder="Ej: Arroz, Detergente, etc." required>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="contenedor-botones">
+                <input class="button" type="submit" value="Guardar">
+                
+                <div class="acciones-inferiores">
+                    <a href="pagina-principal.html">Volver al Menú</a>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        const idUsuarioLogueado = localStorage.getItem('usuarioID');
+        if (idUsuarioLogueado) {
+            document.getElementById('id_usuario_input').value = idUsuarioLogueado;
+        } else {
+            alert("No hay una sesión activa. Inicia sesión nuevamente.");
+            window.location.href = "iniciar_sesion.html";
+        }
+    </script>
+</body>
+</html>
