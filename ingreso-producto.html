@@ -46,12 +46,12 @@
         if (idUsuarioLogueado) {
             document.getElementById('id_usuario_input').value = idUsuarioLogueado;
             
-            // Función interna para rellenar la lista desplegable desde Node
-            fetch(`http://localhost:3000/obtener-mis-productos?id_usuario=${idUsuarioLogueado}`)
+            // CORRECCIÓN: Apuntamos al servidor en Render, no a localhost
+            fetch(`https://invplus-backend.onrender.com/obtener-mis-productos?id_usuario=${idUsuarioLogueado}`)
                 .then(res => res.json())
                 .then(productos => {
                     const select = document.getElementById('select_productos');
-                    select.innerHTML = ""; // Limpiar el "Cargando..."
+                    select.innerHTML = ""; 
 
                     if(productos.length === 0){
                         const opt = document.createElement('option');
@@ -61,13 +61,11 @@
                         return;
                     }
 
-                    // Agregar opción inicial por defecto
                     const optDefault = document.createElement('option');
                     optDefault.value = "";
                     optDefault.text = "-- Seleccione un producto --";
                     select.appendChild(optDefault);
 
-                    // Poblar dinámicamente
                     productos.forEach(p => {
                         const opt = document.createElement('option');
                         opt.value = p.nombre_producto;
@@ -77,11 +75,12 @@
                 })
                 .catch(err => {
                     console.error("Error cargando productos:", err);
+                    alert("No se pudieron cargar los productos. Revisa tu conexión.");
                 });
 
         } else {
             alert("No hay una sesión activa. Inicia sesión nuevamente.");
-            window.location.href = "iniciar_sesion.html";
+            window.location.href = "index.html";
         }
     </script>
 </body>
