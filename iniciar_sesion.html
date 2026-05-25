@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesion</title>
+    <link rel="stylesheet" href="css/decoracion.css">
+</head>
+
+<body>
+
+<section class="contenido">
+
+    <h1>Iniciar Sesión</h1>
+
+    <form onsubmit="login(event)" autocomplete="off">
+        
+        <input class="controls" type="text" id="identificacion" placeholder="Ingrese su identificación" autocomplete="one-time-code" required>
+        
+        <input class="controls" type="password" id="password" placeholder="Ingrese su contraseña" autocomplete="new-password" required>
+        
+        <input class="button" type="submit" value="Iniciar sesión">
+    </form>
+
+    <p id="mensaje" style="color:red;"></p>
+
+    <div class="acciones">
+        <a href="registro.html">Registrarse</a> 
+        <a href="recuperar-contrasena.html">¿Olvidaste tu contraseña?</a>
+    </div>
+
+</section>
+
+<script>
+function login(e) {
+    e.preventDefault();
+
+    const identificacion = document.getElementById('identificacion').value;
+    const password = document.getElementById('password').value;
+
+    fetch('https://invplus-backend.onrender.com/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ identificacion, password })
+    })
+    .then(res => res.text())
+    .then(data => {
+        if (data === 'OK') {
+            // ==========================================
+            // MODIFICACIÓN CLAVE: Guardar el carnet del usuario
+            // ==========================================
+            localStorage.setItem('usuarioID', identificacion);
+            
+            // Ahora sí redirigimos con seguridad
+            window.location.href = 'pagina-principal.html';
+        } else if (data === 'NO') {
+            document.getElementById('mensaje').innerText = 'Credenciales incorrectas';
+        } else if (data === 'ERROR') {
+            document.getElementById('mensaje').innerText = 'Error servidor';
+        }
+    })
+    .catch(() => {
+        document.getElementById('mensaje').innerText = 'Sin conexión';
+    });
+}
+</script>
+
+</body>
+</html>
